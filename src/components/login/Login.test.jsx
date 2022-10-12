@@ -61,10 +61,33 @@ test("password input should change", () => {
     expect(passwordInput.value).toBe(testValue)
 })
 
-test("Button should not be disable", () => {
+test("Button should not be disable on input", () => {
     render(<Login />)
     const button = screen.getByRole("button")
     const userInput = screen.getByPlaceholderText(/username/i)
     const passwordInput = screen.getByPlaceholderText(/password/i)
-    expect(button).toBeDisabled()
+    const testValue = "test"
+
+    fireEvent.change(userInput, { target: { value: testValue } })
+    fireEvent.change(passwordInput, { target: { value: testValue } })
+    expect(button).not.toBeDisabled()
+})
+
+test("Loading should no be renderer", () => {
+    render(<Login />)
+    const button = screen.getByRole("button")
+    expect(button).not.toHaveTextContent(/please wait/i)
+})
+
+test("Loading should be rendered when click", () => {
+    render(<Login />)
+    const button = screen.getByRole("button")
+    const userInput = screen.getByPlaceholderText(/username/i)
+    const passwordInput = screen.getByPlaceholderText(/password/i)
+    const testValue = "test"
+
+    fireEvent.change(userInput, { target: { value: testValue } })
+    fireEvent.change(passwordInput, { target: { value: testValue } })
+    fireEvent.click(button)
+    expect(button).toHaveTextContent(/please wait/i)
 })
